@@ -1,0 +1,10 @@
+.cache/
+.termux/
+storage/
+sqlmap-dev/
+__pycache__/
+*.pyc
+logs/*.log
+rockyou.txt
+*.log
+node_modules/

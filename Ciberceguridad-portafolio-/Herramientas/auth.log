@@ -1,0 +1,8 @@
+Dec 17 09:00:01 srv-web sshd[101]: Failed password for root from 192.168.1.105 port 5560
+Dec 17 09:00:05 srv-web sshd[102]: Failed password for root from 192.168.1.105 port 5562
+Dec 17 09:00:10 srv-web sshd[103]: Failed password for admin from 192.168.1.105 port 5564
+Dec 17 09:00:15 srv-web sshd[104]: Failed password for deploy from 192.168.1.105 port 5566
+Dec 17 09:01:00 srv-web sshd[105]: Accepted password for deploy from 192.168.1.105 port 5568
+Dec 17 09:05:20 srv-web sshd[110]: Failed password for root from 10.0.0.5 port 4120
+Dec 17 09:10:01 srv-web sudo: deploy : TTY=pts/0 ; USER=root ; COMMAND=/usr/bin/whoami
+Dec 17 09:10:15 srv-web sudo: deploy : TTY=pts/0 ; USER=root ; COMMAND=/bin/cat /etc/shadow
