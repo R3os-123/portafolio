@@ -1,0 +1,10 @@
+{
+  "keys": [
+    {
+      "kty": "RSA",
+      "e": "AQAB",
+      "kid": "mi-llave-identificadora",
+      "n": "o6hRn4RSUuz0Utcn13OpFBBPcVduIwur-SQL1Xm12VGM5BJDL23A9ftjHbUyxGVQefS8NC7C_3ttRlfn8ydUzg868eYtzcBljXtLTW5broifHw5mmdhl0xg8xF1PZlOIhvusR1R2VGQ6OR8fgW8iHROj2YGIABUAC83PCSaz6HMz9JYyaXH5LIFi5_zw2tTZrI39x3ctC0WPzfTwWh65xsgd6kmSlHUMx0CPc1iblw7EgjbO-Lt2K_Yri_mxb2fEH0IR0DarADeFV8XzMbrl6X_fWNJiwqRafhuVlKj_a8O7jIhecWiM6IPmegSj4xcaolTISAZVpoNUzX854lcW-Q"
+    }
+  ]
+}

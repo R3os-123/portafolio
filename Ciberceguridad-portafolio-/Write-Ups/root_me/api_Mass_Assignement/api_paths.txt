@@ -1,0 +1,10 @@
+/api/products/1/price
+/api/v1/products/1/price
+/api/v2/products/1/price
+/products/1/price
+/api/price/1
+/api/product/1/price
+/rest/products/1/price
+/graphql
+/api/graphql
+/api/checkout

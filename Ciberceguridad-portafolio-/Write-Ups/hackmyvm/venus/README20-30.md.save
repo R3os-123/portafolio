@@ -1,0 +1,82 @@
+################
+# MISSION 0x21 #
+################
+
+## EN ##
+User eloise has saved her password in a particular way.
+
+## ES ##
+La usuaria eloise ha guardado su password de una forma particular.
+
+cat mission.txt
+################
+# MISSION 0x21 #
+################
+
+## EN ##
+User eloise has saved her password in a particular way.
+
+## ES ##
+La usuaria eloise ha guardado su password de una forma particular.
+
+copiamos el contenido del archivo eloise a nuestra maquina y ejecutamos el siguiente comando
+
+```bash
+cat eloise | base64 -d > password_eloise.jpg```
+esto se debe a que el texto en el archivo es una codificacion en base64 para una imagen,
+en caso de hacer esto en un terminal sin acceso a un visualisador de imagenes se puede ejecutar un
+servidor python con
+```python
+python3 -m http.server 800
+````
+y acceder desde el navegador a la imagen siendo la contraseña
+
+yOUJlV0SHOnbSPm
+
+lucia@venus:~$ cat mission.txt
+################
+# MISSION 0x23 #
+################
+
+## EN ##
+The user isabel has left her password in a file in the /etc/xdg folder but she does not remember the name, however she has dict.txt that can help her to remember.
+
+## ES ##
+La usuaria isabel ha dejado su password en un fichero en la carpeta /etc/xdg pero no recuerda el nombre, sin embargo tiene dict.txt que puede ayudarle a recordar.
+lucia@venus:~$ for i in $(cat dict.txt); do
+    if [ -f "/etc/xdg/$i" ]; then
+        echo "Encontrado: /etc/xdg/$i"
+        cat "/etc/xdg/$i" 2>/dev/null
+    fi
+done
+Encontrado: /etc/xdg/readme
+H5ol8Z2mrRsorC0
+lucia@venus:~$
+
+################
+# MISSION 0x24 #
+################
+
+## EN ##
+The password of the user freya is the only string that is not repeated in different.txt
+
+## ES ##
+La password de la usuaria freya es el unico string que no se repite en different.txt
+isabel@venus:~$ grep -o ".*" different.txt | sort | uniq -c | grep "^ *1 " | awk '{print $2}'
+EEDyYFDwYsmYawj
+
+
+################
+# MISSION 0x25 #
+################
+
+## EN ##
+User alexa puts her password in a .txt file in /free every minute and then deletes it.
+
+## ES ##
+La usuaria alexa pone su password en un fichero .txt en la carpeta /free cada minuto y luego lo borra.
+freya@venus:~$ while true; do
+    cat /free/*.txt 2>/dev/null && break
+done
+mxq9O3MSxxX9Q3S
+
