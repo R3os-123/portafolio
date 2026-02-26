@@ -1,0 +1,226 @@
+
+# Ataque DHCP y Procedimiento de Recuperación en Kali Linux
+
+## 1. Introducción
+
+Un **ataque DHCP** es una técnica que explota el protocolo _Dynamic Host Configuration Protocol_ para afectar la disponibilidad o integridad de la red. Entre los más comunes se encuentran:
+
+- **DHCP Starvation**: saturación del servidor DHCP con solicitudes falsas hasta agotar el pool de direcciones.
+    
+- **Rogue DHCP**: levantamiento de un servidor DHCP malicioso que asigna configuraciones incorrectas.
+    
+
+### Contexto del laboratorio
+
+- Entorno virtualizado en **VMware**
+    
+- Sistema atacante: Kali Linux
+    
+- Configuración de red:
+    
+    - `eth0` → Host-only
+        
+    - `eth1` → Bridge
+        
+- Objetivo:
+    
+    1. Validar la ejecución del ataque DHCP.
+        
+    2. Documentar el procedimiento técnico de recuperación del sistema afectado.
+        
+
+---
+
+## 2. Ejecución del ataque
+
+### Herramienta utilizada
+
+- **Yersinia** (framework para pruebas sobre protocolos de red, incluyendo DHCP)
+    
+
+### Interfaces afectadas
+
+- **eth0 (Host-only)**
+    
+    - Se generaron concesiones falsas en el rango `192.168.56.x`.
+        
+- **eth1 (Bridge)**
+    
+    - Se propagaron concesiones erróneas hacia la red física.
+        
+
+### Resultado del ataque
+
+Tras reiniciar el sistema:
+
+- Ambas interfaces quedaron dentro del rango `192.168.56.x`.
+    
+- Se presentaron IPs duplicadas.
+    
+- Pérdida parcial de conectividad.
+    
+- Problemas persistentes en la configuración DHCP.
+    
+
+---
+
+## 3. Problemas detectados tras el ataque
+
+- Interfaces en estado `DOWN` al desconectar adaptadores.
+    
+- IPs duplicadas en `eth0`.
+    
+- Persistencia de concesiones falsas en:
+    
+
+```bash
+/var/lib/dhcp/
+```
+
+- Sin navegación a dominios:
+    
+    - `ping 8.8.8.8` → Funcionaba.
+        
+    - `ping google.com` → Fallaba (problema DNS).
+        
+- NetworkManager mostraba conexiones sin dispositivo asociado.
+    
+- Error relacionado con interfaz `loopback`.
+    
+
+---
+
+## 4. Procedimiento de recuperación
+
+### 4.1 Reiniciar adaptadores en VMware
+
+- Reactivar adaptadores **Bridge** y **Host-only**.
+    
+- Verificar que cada interfaz esté en el modo correcto.
+    
+
+---
+
+### 4.2 Configurar NetworkManager
+
+Editar el archivo:
+
+```bash
+sudo nano /etc/NetworkManager/NetworkManager.conf
+```
+
+Contenido:
+
+```conf
+[main]
+plugins=ifupdown,keyfile
+
+[ifupdown]
+managed=true
+```
+
+Reiniciar el servicio:
+
+```bash
+sudo systemctl restart NetworkManager
+```
+
+---
+
+### 4.3 Levantar interfaces manualmente
+
+```bash
+sudo ip link set eth0 up
+sudo ip link set eth1 up
+```
+
+---
+
+### 4.4 Solicitar nueva IP dinámica
+
+```bash
+sudo dhcpc -i eth1   # Bridge
+sudo dhcpc -i eth0   # Host-only
+```
+
+---
+
+### 4.5 Configurar IP estática en Host-only
+
+Editar:
+
+```bash
+sudo nano /etc/network/interfaces
+```
+
+Agregar:
+
+```conf
+auto eth0
+iface eth0 inet static
+    address 192.168.56.101
+    netmask 255.255.255.0
+```
+
+---
+
+### 4.6 Crear perfiles en NetworkManager
+
+```bash
+sudo nmcli con add type ethernet ifname eth1 con-name bridge-fijo
+sudo nmcli con add type ethernet ifname eth0 con-name hostonly-fijo
+```
+
+---
+
+### 4.7 Configurar DNS persistente
+
+```bash
+sudo nmcli con mod bridge-fijo ipv4.dns "8.8.8.8 1.1.1.1"
+sudo nmcli con mod bridge-fijo ipv4.ignore-auto-dns yes
+sudo nmcli con up bridge-fijo
+```
+
+---
+
+### 4.8 Verificar conectividad
+
+```bash
+ping 8.8.8.8       # Verificar salida a Internet
+ping google.com    # Verificar resolución DNS
+```
+
+---
+
+## 5. Conclusiones
+
+- Un ataque DHCP puede dejar concesiones corruptas que afectan la conectividad incluso después de reiniciar el sistema.
+    
+- La recuperación requiere:
+    
+    - Limpiar leases DHCP.
+        
+    - Reconfigurar interfaces manualmente.
+        
+    - Restaurar gestión correcta de NetworkManager.
+        
+    - Configurar DNS persistente.
+        
+- Si NetworkManager no gestiona las interfaces, estas quedarán como _unmanaged_.
+    
+- Documentar el proceso permite repetir el laboratorio de forma controlada y validable.
+    
+
+---
+
+## 6. Recomendaciones
+
+- Realizar este tipo de pruebas únicamente en entornos aislados.
+    
+- No ejecutar ataques DHCP en redes productivas.
+    
+- Mantener snapshots antes de pruebas ofensivas en entornos virtualizados.
+    
+- Registrar logs para análisis forense posterior.
+    
+
